@@ -48,8 +48,7 @@ def print_title(url, chan, nick, mode):
                   u"\0033\002::\002"
             msg = msg.format(title, url, nick, mode)
             msg = msg.encode(r.encoding, "ignore")
-            # Weird context and timing issues with threading, hence:
-            hexchat.command("TIMER 0.1 DOAT {0} ECHO {1}".format(chan, msg))
+            hexchat.command("say " + msg)
     except requests.exceptions.RequestException as e:
         print("\002Link Title:\002 {0}".format(e))
     except urllib3.exceptions.HTTPError as e:
