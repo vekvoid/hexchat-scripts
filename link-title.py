@@ -6,6 +6,8 @@ import threading
 import urllib3
 import hexchat
 
+urllib3.disable_warnings()
+
 __module_name__ = "Link Title"
 __module_author__ = "PDog"
 __module_version__ = "0.6"
@@ -35,6 +37,9 @@ def snarfer(html_doc):
     return snarf
 
 def print_title(url, chan, nick, mode):
+    if re.match('https?:\/\/w{3}.youtu(be)?.(com|be)\/', url):
+		return
+	
     try:
         r = requests.get(url, verify=False)
         if r.headers["content-type"].split("/")[0] == "text":
@@ -48,6 +53,7 @@ def print_title(url, chan, nick, mode):
                   u"\0033\002::\002"
             msg = msg.format(title, url, nick, mode)
             msg = msg.encode(r.encoding, "ignore")
+            # Weird context and timing issues with threading, hence:
             hexchat.command("say " + msg)
     except requests.exceptions.RequestException as e:
         print("\002Link Title:\002 {0}".format(e))
